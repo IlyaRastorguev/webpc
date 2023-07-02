@@ -1,0 +1,27 @@
+{
+  "name": "webpc",
+  "description": "WASM webp encoder",
+  "version": "1.0.15",
+  "main": "lib/index.js",
+  "author": "rastorguew94@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^20.3.2",
+    "typescript": "^5.1.6"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.1"
+  },
+  "scripts": {
+    "build": "rm -rf lib && tsc -b --verbose && mkdir lib/assets && cp -R src/assets/*.wasm lib/assets/",
+    "start": "node ./bin/index.js",
+    "dev": "ts-node ./src/index.ts",
+    "pack": "npm pack"
+  },
+  "files": [
+    "lib",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ]
+}
