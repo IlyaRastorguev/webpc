@@ -209,7 +209,7 @@ function isFileURI(filename) {
   return filename.startsWith("file://");
 }
 let wasmBinaryFile;
-wasmBinaryFile = "assents/encoder.wasm";
+wasmBinaryFile = "assets/encoder.wasm";
 if (!isDataURI(wasmBinaryFile)) wasmBinaryFile = locateFile(wasmBinaryFile);
 function getBinary(file) {
   try {
