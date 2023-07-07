@@ -32,7 +32,7 @@ class WebPEncoder implements IWebPEncoder {
       };
     };
   }
-  encodeImage = (
+  encodeImageData = (
     imageData: ImageData,
     quality: number = 100,
   ): Uint8ClampedArray => {

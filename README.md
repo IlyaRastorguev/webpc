@@ -74,6 +74,6 @@ const F = new File([convertedImage], "test.webp", {
 
 ```javascript
 interface IWebPEncoder {
-  encodeImage: (imageBuf: ImageData, quality: number) => Uint8ClampedArray;
+  encodeImageData: (imageBuf: ImageData, quality: number) => Uint8ClampedArray;
 }
 ```
