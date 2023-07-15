@@ -5,11 +5,11 @@ It's a WASM wrapper arown [libwebp](https://github.com/webmproject/libwebp.git)
 ## Installing package
 
 ```bash
-yarn add webpc
+yarn add libwebp-wasm
 ```
 
 ```bash
-npm i webpc
+npm i libwebp-wasm
 ```
 
 ## Modify your bundler config for put needed wasm files in your public dir
@@ -51,7 +51,7 @@ new CopyWebpackPlugin([
 ## Usage
 
 ```javascript
-import WebPEncoder from "webpc";
+import WebPEncoder from "libwebp-wasm";
 
 async function loadImage(src) {
   const imgBlob = await fetch(src).then((resp) => resp.blob());
