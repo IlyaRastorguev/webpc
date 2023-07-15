@@ -1,5 +1,5 @@
 {
-  "name": "libwebp-wasm",
+  "name": "webp-encoder",
   "description": "WASM webp encoder",
   "version": "1.0.16",
   "main": "lib/index.js",

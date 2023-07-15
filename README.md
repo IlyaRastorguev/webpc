@@ -1,15 +1,15 @@
-# WebPC - crossbrowser webp encoder
+# Webp-Encoder - crossbrowser webp encoder
 
 It's a WASM wrapper arown [libwebp](https://github.com/webmproject/libwebp.git)
 
 ## Installing package
 
 ```bash
-yarn add libwebp-wasm
+yarn add webp-encoder
 ```
 
 ```bash
-npm i libwebp-wasm
+npm i webp-encoder
 ```
 
 ## Modify your bundler config for put needed wasm files in your public dir
@@ -51,7 +51,7 @@ new CopyWebpackPlugin([
 ## Usage
 
 ```javascript
-import WebPEncoder from "libwebp-wasm";
+import WebPEncoder from "webp-encoder";
 
 async function loadImage(src) {
   const imgBlob = await fetch(src).then((resp) => resp.blob());
