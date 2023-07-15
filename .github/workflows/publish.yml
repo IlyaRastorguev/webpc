@@ -16,10 +16,10 @@ jobs:
         with:
           node-version: 18
           registry-url: https://registry.npmjs.org/
-      - name: Automated Version Bump
-        uses: phips28/gh-action-bump-version@v10.0.1
-        with: 
-          commit-message: 'Release: version {{version}} [skip ci]'
+#       - name: Automated Version Bump
+#         uses: phips28/gh-action-bump-version@v10.0.1
+#         with: 
+#           commit-message: 'Release: version {{version}} [skip ci]'
       - run: npm i
       - run: npm run build
       - run: npm run pack
