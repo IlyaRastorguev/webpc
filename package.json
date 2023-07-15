@@ -1,10 +1,16 @@
 {
   "name": "webp-encoder",
   "description": "WASM webp encoder",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "main": "lib/index.js",
   "author": "rastorguew94@gmail.com",
   "license": "MIT",
+  "keywords": [
+    "libwebp",
+    "webp",
+    "encoder",
+    "wasm"
+  ],
   "dependencies": {
     "@types/node": "^20.3.2",
     "typescript": "^5.1.6"
