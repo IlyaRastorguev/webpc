@@ -42,7 +42,7 @@ And for WebPack
 ```javascript
 new CopyWebpackPlugin([
   {
-    from: path.resolve(__dirname, "node_modules/webpc/lib/assets") + '/*.wasm',
+    from: path.resolve(__dirname, "node_modules/webp-encoder/lib/assets") + '/*.wasm',
     to: 'assets',
   }
 ]),
@@ -66,7 +66,7 @@ async function loadImage(src) {
 
 const imageData = await loadImage("https://some.url.to.image");
 
-const convertedImage = WebPEncoder.encodeImage(imageData, quality);
+const convertedImage = WebPEncoder.encodeImageData(imageData, quality);
 const F = new File([convertedImage], "test.webp", {
   type: "image/webp",
 });
