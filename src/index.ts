@@ -1,8 +1,8 @@
-import Module from "./adapter";
+import { Module } from "./adapter"
 
 class WebPEncoder implements IWebPEncoder {
   #api: Api = new Proxy<Api>({} as Api, {
-    get: function (api, name) {
+    get: function(api, name) {
       if (!api[name as keyof Api]) {
         return (...args: any) => console.warn("method is unimplemented", args);
       } else return api[name as keyof Api];
@@ -19,7 +19,7 @@ class WebPEncoder implements IWebPEncoder {
         ]),
         deallocateMemory: Module.cwrap("deallocate_memory", "", ["number"]),
         encode: Module.cwrap("encode", "", [
-          "array",
+          "number",
           "number",
           "number",
           "number",
@@ -33,16 +33,18 @@ class WebPEncoder implements IWebPEncoder {
     };
   }
   encodeImageData = (
-    imageData: ImageData,
+    buffer: Uint8ClampedArray,
+    width: number,
+    height: number,
     quality: number = 100,
   ): Uint8ClampedArray => {
     const sourcePointer = this.#api.allocateMemory(
-      imageData.width,
-      imageData.height,
+      width,
+      height,
     );
-    
-    Module.HEAP8.set(imageData.data, sourcePointer);
-    this.#api.encode(sourcePointer, imageData.width, imageData.height, quality);
+
+    Module.HEAP8.set(buffer, sourcePointer);
+    this.#api.encode(sourcePointer, width, height, quality);
     this.#api.deallocateMemory(sourcePointer);
     const outputPointer = this.#api.getResultMemoryPointer();
     const outputBufferSize = this.#api.getResultMemorySize();
