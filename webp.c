@@ -1,11 +1,12 @@
 #include "emscripten.h"
-#include "src/webp/encode.h"
-// #include <stdint.h>
+#include "libwebp/src/webp/encode.h"
+#include <stdint.h>
 
-EMSCRIPTEN_KEEPALIVE
-int version() {
-  return WebPGetEncoderVersion();
-}
+struct Result {
+  uint8_t* buffer_pointer;
+  int buffer_size;
+};
+
 
 EMSCRIPTEN_KEEPALIVE
 uint8_t* allocate_memory(int width, int height) {
@@ -17,7 +18,8 @@ void deallocate_memory(uint8_t* p) {
   free(p);
 }
 
-int result[2];
+
+struct Result result = {};
 EMSCRIPTEN_KEEPALIVE
 void encode(uint8_t* img_in, int width, int height, float quality) {
   uint8_t* img_out;
@@ -25,8 +27,8 @@ void encode(uint8_t* img_in, int width, int height, float quality) {
 
   size = WebPEncodeRGBA(img_in, width, height, width * 4, quality, &img_out);
 
-  result[0] = (int)img_out;
-  result[1] = size;
+  result.buffer_pointer = img_out;
+  result.buffer_size = size;
 }
 
 EMSCRIPTEN_KEEPALIVE
@@ -35,11 +37,11 @@ void free_result(uint8_t* result) {
 }
 
 EMSCRIPTEN_KEEPALIVE
-int get_output_pointer() {
-  return result[0];
+uint8_t* get_output_pointer() {
+  return result.buffer_pointer;
 }
 
 EMSCRIPTEN_KEEPALIVE
 int get_output_size() {
-  return result[1];
+  return result.buffer_size;
 }

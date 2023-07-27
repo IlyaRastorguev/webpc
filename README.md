@@ -30,7 +30,7 @@ export default defineConfig({
           src:
             path.resolve(__dirname, "node_modules/webpc/lib/assets") +
             "/*.wasm",
-          dest: "./assets/",
+          dest: "./",
         },
       ],
     }),
@@ -43,7 +43,7 @@ And for WebPack
 new CopyWebpackPlugin([
   {
     from: path.resolve(__dirname, "node_modules/webp-encoder/lib/assets") + '/*.wasm',
-    to: 'assets',
+    to: '',
   }
 ]),
 ```
@@ -66,7 +66,13 @@ async function loadImage(src) {
 
 const imageData = await loadImage("https://some.url.to.image");
 
-const convertedImage = WebPEncoder.encodeImageData(imageData, quality);
+const convertedImage = WebPEncoder.encodeImageData(
+  imageData.data, 
+  imageData.width, 
+  imageData.height, 
+  quality
+);
+
 const F = new File([convertedImage], "test.webp", {
   type: "image/webp",
 });
@@ -74,6 +80,11 @@ const F = new File([convertedImage], "test.webp", {
 
 ```javascript
 interface IWebPEncoder {
-  encodeImageData: (imageBuf: ImageData, quality: number) => Uint8ClampedArray;
+  encodeImageData: (
+    buffer: Uint8ClampedArray,
+    width: number,
+    height: number,
+    quality: number,
+  ) => Uint8ClampedArray;
 }
 ```

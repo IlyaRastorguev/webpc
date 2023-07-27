@@ -14,7 +14,9 @@ type Api = {
 
 interface IWebPEncoder {
   encodeImageData: (
-    imageBuf: ImageData,
+    buffer: Uint8ClampedArray,
+    width: number,
+    height: number,
     quality: number,
   ) => Uint8ClampedArray;
 }
