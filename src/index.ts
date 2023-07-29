@@ -1,7 +1,7 @@
 import { Module } from "./adapter"
 
 class WebPEncoder implements IWebPEncoder {
-  #api: Api = new Proxy<Api>({} as Api, {
+  private api: Api = new Proxy<Api>({} as Api, {
     get: function(api, name) {
       if (!api[name as keyof Api]) {
         return (...args: any) => console.warn("method is unimplemented", args);
@@ -12,7 +12,7 @@ class WebPEncoder implements IWebPEncoder {
   constructor() {
     Module.onRuntimeInitialized = () => {
       console.log("WASM module runtime initialized");
-      this.#api = {
+      this.api = {
         allocateMemory: Module.cwrap("allocate_memory", "number", [
           "number",
           "number",
@@ -38,23 +38,23 @@ class WebPEncoder implements IWebPEncoder {
     height: number,
     quality: number = 100,
   ): Uint8ClampedArray => {
-    const sourcePointer = this.#api.allocateMemory(
+    const sourcePointer = this.api.allocateMemory(
       width,
       height,
     );
 
     Module.HEAP8.set(buffer, sourcePointer);
-    this.#api.encode(sourcePointer, width, height, quality);
-    this.#api.deallocateMemory(sourcePointer);
-    const outputPointer = this.#api.getResultMemoryPointer();
-    const outputBufferSize = this.#api.getResultMemorySize();
+    this.api.encode(sourcePointer, width, height, quality);
+    this.api.deallocateMemory(sourcePointer);
+    const outputPointer = this.api.getResultMemoryPointer();
+    const outputBufferSize = this.api.getResultMemorySize();
     const resultBuffer = new Uint8ClampedArray(
       Module.HEAP8.buffer,
       outputPointer,
       outputBufferSize,
     );
     const result = new Uint8ClampedArray(resultBuffer);
-    this.#api.freeMemory(outputPointer);
+    this.api.freeMemory(outputPointer);
 
     return result
   };
