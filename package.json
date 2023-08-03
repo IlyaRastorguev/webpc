@@ -1,7 +1,7 @@
 {
   "name": "webp-encoder",
   "description": "WASM webp encoder",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "main": "lib/index.js",
   "author": "rastorguew94@gmail.com",
   "license": "MIT",

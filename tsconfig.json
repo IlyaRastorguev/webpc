@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
     "outDir": "./lib",
-    "target": "esnext",
+    "target": "ES6",
     "lib": [
       "dom",
+      "ES6",
       "dom.iterable",
-      "esnext"
+      "esnext",
+      "ES2015.Proxy"
     ],
     "sourceMap": true,
     "declaration": true,

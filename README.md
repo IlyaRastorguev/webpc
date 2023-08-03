@@ -37,21 +37,86 @@ export default defineConfig({
   ],
 });
 ```
-And for WebPack
+
+Example for webpack > 5 with react-scripts:
 
 ```javascript
-new CopyWebpackPlugin([
-  {
-    from: path.resolve(__dirname, "node_modules/webp-encoder/lib/assets") + '/*.wasm',
-    to: '',
+{
+  "devDependencies": {
+    "copy-webpack-plugin": "^11.0.0"
   }
-]),
+}
+```
+
+```javascript
+const CopyPlugin = require("copy-webpack-plugin");
+const path = require("path");
+
+//this setting for webpack 5 and above
+module.exports = function override(config, env) {
+  console.log(config);
+  config.resolve.fallback = {
+    fs: false,
+    tls: false,
+    net: false,
+    path: false,
+    zlib: false,
+    http: false,
+    https: false,
+    stream: false,
+    crypto: false,
+  };
+
+  config.plugins.push(
+    new CopyPlugin({
+      patterns: [
+        {
+          from: "node_modules/webp-encoder/lib/assets/a.out.wasm",
+          to: "static/js",
+        },
+      ],
+    })
+  );
+
+  return config;
+};
+```
+
+Example for webpack 4 and react-scripts:
+```javascript
+{
+  "devDependencies": {
+    "copy-webpack-plugin": "5.1.2"
+  }
+}
+```
+```javascript
+const CopyPlugin = require("copy-webpack-plugin");
+const path = require("path");
+
+module.exports = function override(config, env) {
+  console.log(config);
+
+  config.plugins.push(
+    new CopyPlugin(
+      [
+        {
+          from: "node_modules/webp-encoder/lib/assets/a.out.wasm",
+          to: "static/js",
+        },
+      ],
+    )
+  );
+
+  return config;
+};
 ```
 
 ## Usage
 
 ```javascript
-import WebPEncoder from "webp-encoder";
+import WebPEncoder from "webp-encoder"
+import { useEffect, useState } from 'react';
 
 async function loadImage(src) {
   const imgBlob = await fetch(src).then((resp) => resp.blob());
@@ -64,18 +129,40 @@ async function loadImage(src) {
   return ctx.getImageData(0, 0, img.width, img.height);
 }
 
-const imageData = await loadImage("https://some.url.to.image");
+function WebPConverter() {
+  const [url, setUrl] = useState()
+  useEffect(() => {
+    loadImage("URL TO IMAGE").then(data => {
+      const imageData = data;
+      const convertedImage = WebPEncoder.encodeImageData(
+        imageData.data,
+        imageData.width,
+        imageData.height,
+        100
+      );
+      const F = new File([convertedImage], "test.webp", {
+        type: "image/webp",
+      })
 
-const convertedImage = WebPEncoder.encodeImageData(
-  imageData.data, 
-  imageData.width, 
-  imageData.height, 
-  quality
-);
+      setUrl(URL.createObjectURL(F))
+    });
+  }, [])
 
-const F = new File([convertedImage], "test.webp", {
-  type: "image/webp",
-});
+  return (
+    <div>
+      <header>
+        <a
+          href={url}
+          download="test"
+        >
+          Download
+        </a>
+      </header>
+    </div>
+  );
+}
+
+export default WebPConverter;
 ```
 
 ```javascript
