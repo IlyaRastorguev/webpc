@@ -1,4 +1,8 @@
 [submodule "libwebp"]
 	path = libwebp
-	url = https://github.com/webmproject/libwebp.git
+	url = https://github.com/IlyaRastorguev/libwebp.git
+	branch = 1.3.1
+[submodule "giflib"]
+	path = giflib
+	url = https://github.com/IlyaRastorguev/giflib.git
 	branch = 1.3.1
