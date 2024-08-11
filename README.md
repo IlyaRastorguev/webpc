@@ -2,6 +2,10 @@
 
 It's a WASM wrapper arown [libwebp](https://github.com/webmproject/libwebp.git)
 
+## Changelog
+
+1. Add support for encoding gifs to animated webp
+
 ## Installing package
 
 ```bash
@@ -83,6 +87,7 @@ module.exports = function override(config, env) {
 ```
 
 Example for webpack 4 and react-scripts:
+
 ```javascript
 {
   "devDependencies": {
@@ -90,6 +95,7 @@ Example for webpack 4 and react-scripts:
   }
 }
 ```
+
 ```javascript
 const CopyPlugin = require("copy-webpack-plugin");
 const path = require("path");
@@ -129,10 +135,16 @@ async function loadImage(src) {
   return ctx.getImageData(0, 0, img.width, img.height);
 }
 
-function WebPConverter() {
-  const [url, setUrl] = useState()
-  useEffect(() => {
-    loadImage("URL TO IMAGE").then(data => {
+async function loadGif(src) {
+  const imgBlob = await fetch(src).then((resp) => resp.blob());
+  return new Uint8Array(await imgBlob.arrayBuffer());
+}
+
+function WebPConverter({ sourceImageUrl }) {
+  const [url, setUrl] = useState();
+  
+  const convertImage = useCallback(() => {
+    loadImage(sourceImageUrl).then(data => {
       const imageData = data;
       const convertedImage = WebPEncoder.encodeImageData(
         imageData.data,
@@ -146,16 +158,34 @@ function WebPConverter() {
 
       setUrl(URL.createObjectURL(F))
     });
-  }, [])
+  }, [sourceImageUrl])
+  
+  const convertGif = useCallback(() => {
+    loadGif(sourceImageUrl).then(imageData => {
+      const convertedGif = WebPEncoder.encodeGifImageData(
+        imageData,
+        imageData.length,
+        1
+      );
+      
+      const F = new File([convertedImage], "test.webp", {
+        type: "image/webp",
+      })
+
+      setUrl(URL.createObjectURL(F))
+    });
+  }, [sourceImageUrl])
 
   return (
     <div>
       <header>
+        <button onClick={convertImage}>convert image</button>
+        <button onClick={convertGif}>convert gif</button>
         <a
           href={url}
           download="test"
         >
-          Download
+          Download result
         </a>
       </header>
     </div>
@@ -165,6 +195,8 @@ function WebPConverter() {
 export default WebPConverter;
 ```
 
+## API
+
 ```javascript
 interface IWebPEncoder {
   encodeImageData: (
@@ -172,6 +204,11 @@ interface IWebPEncoder {
     width: number,
     height: number,
     quality: number,
+  ) => Uint8ClampedArray;
+  encodeGifImageData: (
+    buffer: Uint8Array, // uploaded gif file buffer
+    size: number, // length of buffer
+    lossless: 1 | 0, // if 1 lossless convertation will be using (output size may be larger than original in some cases)
   ) => Uint8ClampedArray;
 }
 ```
