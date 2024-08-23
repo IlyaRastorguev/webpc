@@ -365,9 +365,21 @@ function getBinarySync(file) {
 
 function getBinaryPromise(binaryFile) {
 
-    if (!wasmBinary
+    if (!wasmBinary && (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER)
     ) {
+        if (typeof fetch == "function" && !isFileURI(binaryFile)) {
+            return fetch("/" + binaryFile, {credentials: "same-origin"}).then(resp => {
+                if (!resp["ok"]) {
+                    throw "failed to load wasm binary file at '" + binaryFile + "'";
+                }
 
+                return resp["arrayBuffer"]();
+            }).catch(() => {
+              return getBinarySync(binaryFile);
+            })
+        }
+        
+    } else if (readAsync) {
         return readAsync(binaryFile).then(
             (response) => new Uint8Array(/** @type{!ArrayBuffer} */(response)),
 
@@ -393,23 +405,16 @@ function instantiateAsync(binary, binaryFile, imports, callback) {
     if (!binary &&
         typeof WebAssembly.instantiateStreaming == 'function' &&
         !isDataURI(binaryFile) &&
-
         !isFileURI(binaryFile) &&
-
-
         !ENVIRONMENT_IS_NODE &&
         typeof fetch == 'function') {
-        return fetch("/" + binaryFile, {credentials: 'same-origin'}).then((response) => {
-
-
+        return fetch(binaryFile, {credentials: 'same-origin'}).then((response) => {
             /** @suppress {checkTypes} */
             var result = WebAssembly.instantiateStreaming(response, imports);
 
             return result.then(
                 callback,
                 function (reason) {
-
-
                     err(`wasm streaming compile failed: ${reason}`);
                     err('falling back to ArrayBuffer instantiation');
                     return instantiateArrayBuffer(binaryFile, imports, callback);
@@ -3652,6 +3657,3 @@ if (Module['preInit']) {
 }
 
 run();
-
-
-
