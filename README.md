@@ -76,7 +76,7 @@ module.exports = function override(config, env) {
       patterns: [
         {
           from: "node_modules/webp-encoder/lib/assets/a.out.wasm",
-          to: "static/js",
+          to: "",
         },
       ],
     })
@@ -108,7 +108,7 @@ module.exports = function override(config, env) {
       [
         {
           from: "node_modules/webp-encoder/lib/assets/a.out.wasm",
-          to: "static/js",
+          to: "",
         },
       ],
     )
